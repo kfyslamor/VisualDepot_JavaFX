@@ -8,6 +8,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class ProductMenu {
+    Scene productMenu;
     public Scene display(Stage primaryStage, Scene returnScene){
         //Declarations:
         Button productEntry = new Button("Mal Kayıt");
@@ -18,16 +19,17 @@ public class ProductMenu {
         vBox1.setAlignment(Pos.CENTER);
         //setOnAction:
         productEntry.setOnAction(e->{
-            primaryStage.setScene(new ProductEntryScene().display(primaryStage, returnScene));
+            primaryStage.setScene(new ProductEntryScene().display(primaryStage, productMenu));
         });
         productQuery.setOnAction(e->{
-
+            primaryStage.setScene(new ProductQueryScene().display(primaryStage,productMenu));
         });
         productExit.setOnAction(e->{
 
         });
         //GUI Components:
         vBox1.getChildren().addAll(productEntry,productQuery,productExit);
-        return new Scene(vBox1);
+        productMenu = new Scene(vBox1);
+        return productMenu;
     }
 }

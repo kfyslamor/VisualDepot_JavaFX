@@ -1,8 +1,12 @@
 package sample.Database;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import sample.Scenes.ProductScenes.Product;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 /*
@@ -44,7 +48,7 @@ public class MySQLConnection {
     }
     public MySQLConnection(){
 
-    }
+    }//TODO put the necessary connection statements inside the class constructors.
 
     /**
      * Made as a prototype later to be improved depending on the necessities and expectations.
@@ -53,8 +57,7 @@ public class MySQLConnection {
      * @throws ClassNotFoundException
      * @throws SQLException
      */
-    public ResultSet getTable(String SQLQuery) throws ClassNotFoundException, SQLException {
-        //String query = "SELECT * FROM Raf_A";
+    public ObservableList<Product> getTable(String SQLQuery) throws SQLException {
         Statement st=null;
         ResultSet rs=null;
         Connection con = null;
@@ -68,22 +71,30 @@ public class MySQLConnection {
             e.printStackTrace();
         }
 
-
-        System.out.println("productName - productAmount - lastuseDate - entryDate - capacity");
+        ObservableList<Product> queryResult = FXCollections.observableArrayList();
+        // System.out.println("irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi,depoSorumlusu");
         while(rs.next()){
             //String name = rs.getString("product_name");
-            System.out.println(rs.getString(1) + " " + rs.getInt(2) + " " +  rs.getDate(3) + " "+  rs.getDate(4) + " " + rs.getInt(5));
+            /*
+            * System.out.println(rs.getString(1) + " " + rs.getString(2) + " " +
+                            rs.getInt(3) + " " + rs.getString(4) + " " +
+                            rs.getString(5)
+            +rs.getString(6));*/
+            queryResult.add(new Product(rs.getString(1),rs.getInt(2), LocalDate.parse(rs.getString("SKTTarihi"))));
+            new Product(rs.getString(1),rs.getInt(2), LocalDate.parse(rs.getString("SKTTarihi"))).toString();
             //System.out.println(name);
         }
+
         con.close();
         st.close();
+        System.out.println("Connection is closed.");
         // we need a class that implements Connection or we need to search for a method
         // which will return an instance of Connection.
 
 
 
         System.out.println("St closed,con closed");
-        return rs;
+        return queryResult;
     }
     /**
      *
@@ -208,3 +219,4 @@ public class MySQLConnection {
         return answer;
     }
 }
+//TODO CHECK SQL INJECTION ATTACKS AND ALSO THE PREPARED STATEMENTS

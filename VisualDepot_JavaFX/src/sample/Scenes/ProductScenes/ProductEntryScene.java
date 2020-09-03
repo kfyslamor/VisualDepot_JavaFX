@@ -105,6 +105,8 @@ public class ProductEntryScene {
                 mySQLConnection1.insertToTable("VALUES(\" "+ irsaliyeNoInput.getText() + "\",\"" + urunInput.getText() +"\","
                         + miktarInput.getText() + ",\"" + entryDate.toString() + "\",\"" + lastUseDate.toString() + "\",\"" + depoSorumlusuInput.getText() + "\");"
                 );
+                System.out.println("KAYIT BAŞARILI");
+                mySQLConnection1.getTable("SELECT * FROM urundepo");
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
             }
