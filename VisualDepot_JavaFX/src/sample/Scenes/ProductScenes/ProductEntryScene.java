@@ -102,7 +102,7 @@ public class ProductEntryScene {
 
             MySQLConnection mySQLConnection1 = new MySQLConnection();
             try {
-                mySQLConnection1.insertToTable("VALUES(\" "+ irsaliyeNoInput.getText() + "\",\"" + urunInput.getText() +"\","
+                mySQLConnection1.insertToTable("VALUES(\" "+ irsaliyeNoInput.getText().toUpperCase() + "\",\"" + urunInput.getText().toUpperCase() +"\","
                         + miktarInput.getText() + ",\"" + entryDate.toString() + "\",\"" + lastUseDate.toString() + "\",\"" + depoSorumlusuInput.getText() + "\");"
                 );
                 System.out.println("KAYIT BAŞARILI");
@@ -119,3 +119,4 @@ public class ProductEntryScene {
     }
 }
 //TODO https://stackoverflow.com/questions/34329852/how-to-insert-date-values-into-table
+//TODO make sure no faulty input gets into the database and throws an error instead.

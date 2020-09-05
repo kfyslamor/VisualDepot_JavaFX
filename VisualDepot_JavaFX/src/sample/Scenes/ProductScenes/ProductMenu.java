@@ -25,7 +25,7 @@ public class ProductMenu {
             primaryStage.setScene(new ProductQueryScene().display(primaryStage,productMenu));
         });
         productExit.setOnAction(e->{
-
+            //primaryStage.setScene(new ProductExitScene().display(primaryStage,productMenu));
         });
         //GUI Components:
         vBox1.getChildren().addAll(productEntry,productQuery,productExit);

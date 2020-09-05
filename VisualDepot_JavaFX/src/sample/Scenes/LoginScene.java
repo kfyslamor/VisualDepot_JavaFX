@@ -1,6 +1,7 @@
 package sample.Scenes;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -41,7 +42,6 @@ public class LoginScene {
         GridPane.setConstraints(loginButton,2,1);
         Button returnButton= new Button("Return");
         GridPane.setConstraints(returnButton,2,0);
-
         //setOnActionMethods:
         loginButton.setOnAction(e->{
             final String name,password;
@@ -75,12 +75,13 @@ public class LoginScene {
             primaryStage.setScene(scene1);
         });
         //GUI Components:
-        primaryStage.setWidth(1366);
-        primaryStage.setHeight(768);
         primaryStage.setMinWidth(1366);
         primaryStage.setMinHeight(768);
         primaryStage.setMaxWidth(1366);
         primaryStage.setMaxHeight(768);
+        primaryStage.setHeight(768);
+        primaryStage.setWidth(1366);
+        grid.setAlignment(Pos.CENTER);
         grid.getChildren().addAll(nameLabel,nameInput,passLabel,passField,loginButton,returnButton);
         return new Scene(grid);
     }

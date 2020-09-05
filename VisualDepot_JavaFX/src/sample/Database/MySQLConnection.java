@@ -49,7 +49,44 @@ public class MySQLConnection {
     public MySQLConnection(){
 
     }//TODO put the necessary connection statements inside the class constructors.
-
+    public void queryToDBCreate(String tableName) throws SQLException {
+        Statement st=null;
+        ResultSet rs=null; // RS isn't necessary as we don't get any table data.
+        Connection con = null;
+        try{
+            Class.forName(DRIVER_URL);
+            con = DriverManager.getConnection(DB_URL,UN,PW);
+            st = con.createStatement();
+            st.executeUpdate("CREATE TABLE " + tableName);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            con.close();
+            st.close();
+            System.out.println("Connection closed.");
+        }
+    }
+    public void queryToDBDelete(String tableName,String deleteCondition,String attribute) throws SQLException {
+        Statement st=null;
+        // RS isn't necessary as we don't get any table data.
+        Connection con = null;
+        try{
+            Class.forName(DRIVER_URL);
+            con = DriverManager.getConnection(DB_URL,UN,PW);
+            st = con.createStatement();
+            st.executeUpdate("DELETE FROM " + tableName + " WHERE " + deleteCondition + "=\""+ attribute + "\";");
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            con.close();
+            st.close();
+            System.out.println("Connection closed.");
+        }
+    }
     /**
      * Made as a prototype later to be improved depending on the necessities and expectations.
      * @param SQLQuery
@@ -80,14 +117,15 @@ public class MySQLConnection {
                             rs.getInt(3) + " " + rs.getString(4) + " " +
                             rs.getString(5)
             +rs.getString(6));*/
-            queryResult.add(new Product(rs.getString(1),rs.getInt(2), LocalDate.parse(rs.getString("SKTTarihi"))));
-            new Product(rs.getString(1),rs.getInt(2), LocalDate.parse(rs.getString("SKTTarihi"))).toString();
+            queryResult.add(new Product(rs.getString("urunAdi"),rs.getInt("urunMiktari"), LocalDate.parse(rs.getString("SKTTarihi"))));
+            System.out.println(new Product(rs.getString("urunAdi"), rs.getInt("urunMiktari"), LocalDate.parse(rs.getString("SKTTarihi"))));
             //System.out.println(name);
-        }
+        } //urun adi,miktar, SKT
+        //TODO https://howtodoinjava.com/java/date-time/localdate-format-example/ change the format to dd-MM-YY
 
         con.close();
         st.close();
-        System.out.println("Connection is closed.");
+        //System.out.println("Connection is closed.");
         // we need a class that implements Connection or we need to search for a method
         // which will return an instance of Connection.
 
@@ -96,10 +134,7 @@ public class MySQLConnection {
         System.out.println("St closed,con closed");
         return queryResult;
     }
-    /**
-     *
-     * @param SQLQuery
-     */
+
     //TODO http://alvinalexander.com/java/java-mysql-insert-example-preparedstatement/
     public void insertToTable(String SQLQuery) throws SQLException {
         Statement st=null;
@@ -156,6 +191,7 @@ public class MySQLConnection {
             st.close();
             rs.close();
             con.close();
+            System.out.println("Connection Closed.");
         }
         if (answer){
             return requiredPass;
@@ -176,7 +212,7 @@ public class MySQLConnection {
      * @return true if
      * @throws SQLException
      */
-    //TODO refactor the while loop in a way so you can't register an already registered name & surname.
+
     public boolean insertSignup(String name,String generatedSecuredPasswordHash) throws SQLException {
         Statement st=null;
         ResultSet rs1=null,rs=null;
@@ -219,4 +255,3 @@ public class MySQLConnection {
         return answer;
     }
 }
-//TODO CHECK SQL INJECTION ATTACKS AND ALSO THE PREPARED STATEMENTS

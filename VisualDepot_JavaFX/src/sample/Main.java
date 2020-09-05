@@ -22,12 +22,12 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Depo Görsel");
-
-        primaryStage.setScene(entryScene(primaryStage));
         primaryStage.setMinWidth(1366);
         primaryStage.setMinHeight(768);
         primaryStage.setMaxWidth(1366);
         primaryStage.setMaxHeight(768);
+        primaryStage.setScene(entryScene(primaryStage));
+
         primaryStage.setOnCloseRequest(e->{
             e.consume();
             boolean answer = ConfirmBox.display(primaryStage.getTitle(),"Do you want to quit?");
