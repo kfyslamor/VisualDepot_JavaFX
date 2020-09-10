@@ -74,5 +74,5 @@ public class Main extends Application {
 }
 /*
 TODO Learn exception handling
-TODO Program shouldn't exit after a faulty register AND/OR a faulty login
+TODO Program shouldn't exit after a faulty register AND/OR a faulty login and instead should throw an AlertBox.
  */

@@ -49,7 +49,13 @@ public class MySQLConnection {
     public MySQLConnection(){
 
     }//TODO put the necessary connection statements inside the class constructors.
-    public void queryToDBCreate(String tableName) throws SQLException {
+
+    /**
+     * Used for executing updates in the database.
+     * @param SQLQuery takes a full SQL Query and uses executeUpdate() to execute the query in the database.
+     * @throws SQLException
+     */
+    public void queryToDB(String SQLQuery){
         Statement st=null;
         ResultSet rs=null; // RS isn't necessary as we don't get any table data.
         Connection con = null;
@@ -57,40 +63,21 @@ public class MySQLConnection {
             Class.forName(DRIVER_URL);
             con = DriverManager.getConnection(DB_URL,UN,PW);
             st = con.createStatement();
-            st.executeUpdate("CREATE TABLE " + tableName);
+            st.executeUpdate(SQLQuery);
+            con.close();
+            st.close();
         }
         catch(Exception e){
             e.printStackTrace();
         }
         finally {
-            con.close();
-            st.close();
-            System.out.println("Connection closed.");
-        }
-    }
-    public void queryToDBDelete(String tableName,String deleteCondition,String attribute) throws SQLException {
-        Statement st=null;
-        // RS isn't necessary as we don't get any table data.
-        Connection con = null;
-        try{
-            Class.forName(DRIVER_URL);
-            con = DriverManager.getConnection(DB_URL,UN,PW);
-            st = con.createStatement();
-            st.executeUpdate("DELETE FROM " + tableName + " WHERE " + deleteCondition + "=\""+ attribute + "\";");
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        finally {
-            con.close();
-            st.close();
             System.out.println("Connection closed.");
         }
     }
     /**
-     * Made as a prototype later to be improved depending on the necessities and expectations.
+     *
      * @param SQLQuery
-     * @return
+     * @return returns an ObservableList<Product>
      * @throws ClassNotFoundException
      * @throws SQLException
      */
@@ -110,36 +97,33 @@ public class MySQLConnection {
 
         ObservableList<Product> queryResult = FXCollections.observableArrayList();
         // System.out.println("irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi,depoSorumlusu");
+        System.out.println("VV Requested Products VV");
         while(rs.next()){
-            //String name = rs.getString("product_name");
-            /*
-            * System.out.println(rs.getString(1) + " " + rs.getString(2) + " " +
-                            rs.getInt(3) + " " + rs.getString(4) + " " +
-                            rs.getString(5)
-            +rs.getString(6));*/
-            queryResult.add(new Product(rs.getString("urunAdi"),rs.getInt("urunMiktari"), LocalDate.parse(rs.getString("SKTTarihi"))));
-            System.out.println(new Product(rs.getString("urunAdi"), rs.getInt("urunMiktari"), LocalDate.parse(rs.getString("SKTTarihi"))));
+            queryResult.add(new Product(rs.getString("irsaliyeNo"),rs.getString("urunAdi"),rs.getInt("urunMiktari"),LocalDate.parse(rs.getString("girisTarihi")) ,LocalDate.parse(rs.getString("SKTTarihi"))));
+            System.out.println("--------------------------------------------------------------------------------------------------------------------");
+            System.out.println(new Product(rs.getString("irsaliyeNo"),rs.getString("urunAdi"), rs.getInt("urunMiktari"),LocalDate.parse(rs.getString("girisTarihi")) , LocalDate.parse(rs.getString("SKTTarihi"))));
             //System.out.println(name);
         } //urun adi,miktar, SKT
         //TODO https://howtodoinjava.com/java/date-time/localdate-format-example/ change the format to dd-MM-YY
 
         con.close();
         st.close();
+        rs.close();
         //System.out.println("Connection is closed.");
         // we need a class that implements Connection or we need to search for a method
         // which will return an instance of Connection.
 
 
 
-        System.out.println("St closed,con closed");
+        System.out.println("Connection Closed. queryResult returned.");
         return queryResult;
     }
 
     //TODO http://alvinalexander.com/java/java-mysql-insert-example-preparedstatement/
-    public void insertToTable(String SQLQuery) throws SQLException {
+    public void insertToTable(String tableName,String SQLQuery) throws SQLException {
         Statement st=null;
         Connection con = null;
-        String SQLQueryFULL = "INSERT INTO urundepo (irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi,depoSorumlusu) " +
+        String SQLQueryFULL = "INSERT INTO " + tableName +" (irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi,depoSorumlusu) " +
                 SQLQuery;
         //String SQLQuery1 = "INSERT INTO Users(id,username,password) VALUES("+ (nextMember + 1) +",\"" + name + "\"," + "\""+generatedSecuredPasswordHash + "\");";
         try{
@@ -159,9 +143,11 @@ public class MySQLConnection {
     }
 
     /**
-     * I DON'T KNOW WHAT THE FUCK IS SHIT METHOD IS DOING RN, IT MAY INVADE MY COMPUTER IDK
+     *
      * @param name
-     * @return
+     * @return hashes the user input and then compares the hashed version fetched from the database.
+     * function returns true, if there is a match in the database.
+     * returns false if there isn't a match in the database.
      */
     public String checkLogin(String name) throws SQLException {
         Statement st=null;
@@ -231,7 +217,7 @@ public class MySQLConnection {
             rs1.next();
             int nextMember = rs1.getInt(1);
             //INSERT INTO Users(id,username,password) VALUES(X,"name","password");
-            String SQLQuery1 = "INSERT INTO Users(id,username,password) VALUES("+ (nextMember + 1) +",\"" + name + "\"," + "\""+generatedSecuredPasswordHash + "\");"; //TODO FIX THIS SHIT
+            String SQLQuery1 = "INSERT INTO Users(id,username,password) VALUES("+ (nextMember + 1) +",\"" + name + "\"," + "\""+generatedSecuredPasswordHash + "\");";
             System.out.println(SQLQuery1);
             st.executeUpdate(SQLQuery1); // EXECUTES THE QUERY.
             rs = st.executeQuery("SELECT * FROM Users");

@@ -11,6 +11,7 @@ public class Product{
     private int urunMiktari;
     private int isExpiredCheck;
     private String isExpired;
+    //USER INPUT CONSTRUCTOR
     public Product(String irsaliyeNo,String urunAdi,int urunMiktari,LocalDate girisTarihi,String depoSorumlusu){
         this.irsaliyeNo = irsaliyeNo;
         this.urunAdi = urunAdi;
@@ -19,25 +20,37 @@ public class Product{
         this.SKTTarihi = girisTarihi.plusMonths(1); // SKTTarihi translates into expiration date, which is 1 month.
         this.depoSorumlusu = depoSorumlusu;
         this.isExpiredCheck = LocalDate.now().compareTo(SKTTarihi);
-        if (LocalDate.now().compareTo(SKTTarihi) >= 0){
+        if (this.isExpiredCheck < 0){
             this.isExpired = "Son Kullanım Tarihi Geçmemiş";
         }
         else{
             this.isExpired = "Son Kullanım Tarihi Geçmiş";
         }
     }
-    //TODO If the expiration date is close, change the row colors according how close they are to the expiration date.
-    public Product(String urunAdi,int urunMiktari,LocalDate SKTTarihi){
+    //DATABASE CONSTRUCTOR
+
+    public Product(String irsaliyeNo,String urunAdi,int urunMiktari,LocalDate girisTarihi,LocalDate SKTTarihi){
         this.urunAdi=urunAdi;
         this.urunMiktari=urunMiktari;
         this.SKTTarihi=SKTTarihi;
+        this.girisTarihi=girisTarihi;
+        this.irsaliyeNo=irsaliyeNo;
         this.isExpiredCheck = LocalDate.now().compareTo(SKTTarihi);
-        if (LocalDate.now().compareTo(SKTTarihi) >= 0){
+        if (this.isExpiredCheck < 0){
             this.isExpired = "Son Kullanım Tarihi Geçmemiş";
         }
         else{
-            this.isExpired = "Son Kullanım Tarihi Geçmiş";
+            this.isExpired = "SON KULLANIM TARİHİ GEÇMİŞ!";
         }
+    }
+
+    public Product(){
+        this.irsaliyeNo = null;
+        this.SKTTarihi = null;
+        this.depoSorumlusu = null;
+        this.girisTarihi = null;
+        this.urunAdi = null;
+        this.isExpired = null;
     }
 
     @Override
@@ -101,14 +114,7 @@ public class Product{
         this.urunMiktari = urunMiktari;
     }
 
-    public void setIsExpired(){
-        this.isExpiredCheck = LocalDate.now().compareTo(SKTTarihi);
-        if (this.isExpiredCheck >= 0){
-
-            this.isExpired= "Son Kullanım Tarihi Geçmemiş"; // not expired
-        }
-        else{
-            this.isExpired= "Son Kullanım Tarihi Geçmiş"; // expired
-        }
+    public String getIsExpired() {
+        return isExpired;
     }
 }

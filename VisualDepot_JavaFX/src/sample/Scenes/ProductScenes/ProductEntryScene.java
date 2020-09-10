@@ -91,6 +91,8 @@ public class ProductEntryScene {
         //GUI Components:
         //flowPane.getChildren().addAll(irsaliyeNoLabel,irsaliyeNoInput,urunLabel,urunInput);
         //urunLabel,urunInput,miktarLabel,miktarInput,giristarihiLabel,giristarihiInput,depoSorumlusuLabel,depoSorumlusuInput
+
+
         //setOnAction:
         productEntryButton.setOnAction(e->{
             //Date
@@ -102,13 +104,19 @@ public class ProductEntryScene {
 
             MySQLConnection mySQLConnection1 = new MySQLConnection();
             try {
-                mySQLConnection1.insertToTable("VALUES(\" "+ irsaliyeNoInput.getText().toUpperCase() + "\",\"" + urunInput.getText().toUpperCase() +"\","
-                        + miktarInput.getText() + ",\"" + entryDate.toString() + "\",\"" + lastUseDate.toString() + "\",\"" + depoSorumlusuInput.getText() + "\");"
+                mySQLConnection1.insertToTable("urundepo","VALUES(\""+ irsaliyeNoInput.getText().toUpperCase() + "\",\"" + urunInput.getText().toUpperCase() +"\","
+                        + Integer.parseInt(miktarInput.getText()) + ",\"" + entryDate.toString() + "\",\"" + lastUseDate.toString() + "\",\"" + depoSorumlusuInput.getText() + "\");"
                 );
                 System.out.println("KAYIT BAŞARILI");
                 mySQLConnection1.getTable("SELECT * FROM urundepo");
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
+            } // parsing is good.
+            finally {
+                irsaliyeNoInput.clear();
+                urunInput.clear();
+                miktarInput.clear();
+                depoSorumlusuInput.clear();
             }
 
         });// Mal kayıt butonu.
