@@ -15,8 +15,8 @@ public class ConfirmBox {
         int count=0;
         Stage stagePopup = new Stage();
         stagePopup.setTitle(title);
-        Button yesB = new Button("Yes");
-        Button noB = new Button("No");
+        Button yesB = new Button("Evet");
+        Button noB = new Button("Hayır");
         Label labelQuestion = new Label(question);
         
         //setOnActionMethod:
@@ -36,6 +36,7 @@ public class ConfirmBox {
         hbox1.setPadding(new Insets(50));
         hbox1.getChildren().addAll(labelQuestion,yesB,noB);
         Scene scene1 = new Scene(hbox1);
+        scene1.getStylesheets().add("viper.css");
         stagePopup.setScene(scene1);
         stagePopup.setMinWidth(200);
         stagePopup.setMinHeight(150);

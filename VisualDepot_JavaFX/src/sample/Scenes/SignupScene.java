@@ -1,6 +1,7 @@
 package sample.Scenes;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -36,9 +37,9 @@ public class SignupScene {
         PasswordField passField = new PasswordField();
         passField.setPromptText("Enter pass here");
         GridPane.setConstraints(passField,1,1);
-        Button loginButton = new Button("Log In");
+        Button loginButton = new Button("Kayıt Ol");
         GridPane.setConstraints(loginButton,2,1);
-        Button returnButton= new Button("Return");
+        Button returnButton= new Button("Geri dön");
         GridPane.setConstraints(returnButton,2,0);
 
         //setOnActionMethods:
@@ -79,6 +80,8 @@ public class SignupScene {
         primaryStage.setMaxWidth(1366);
         primaryStage.setMaxHeight(768);
         grid.getChildren().addAll(nameLabel,nameInput,passLabel,passField,loginButton,returnButton);
+        grid.setAlignment(Pos.CENTER);
+        grid.getStylesheets().add("viper.css");
         return new Scene(grid);
     }
     private boolean checkInput(String name,String password){

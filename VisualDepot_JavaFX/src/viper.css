@@ -1,0 +1,24 @@
+.root{
+	-fx-background-color: #383838;
+	-fx-font-size: 11pt;
+}
+.button{
+	-fx-background-color: darkslateblue;
+	-fx-text-fill: white;
+    -fx-border-color: Black;
+}
+.button:focused{
+	-fx-background-color: darkslateblue;
+	-fx-text-fill: white;
+    -fx-border-color: Black;
+    -fx-border-width: 2;P
+    -fx-border-color: #0093EF;
+}
+.label{
+    -fx-text-fill:white;   
+    -fx-font-size:15;
+}
+/*
+  
+
+*/

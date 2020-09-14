@@ -42,7 +42,7 @@ public class ProductExitScene {
 
         urunAdiColumn = new TableColumn<Product, String>("Ürün Adı");
         urunMiktariColumn = new TableColumn<Product, Integer>("Ürün Miktarı");
-        cikisTarihiColumn = new TableColumn<>("Depodan Çıkış Tarihi");
+        cikisTarihiColumn = new TableColumn<>("Çıkış Tarihi");
         SKTTarihiColumn = new TableColumn<Product, LocalDate>("Son Kullanım Tarihi");
         isExpiredColumn = new TableColumn<Product, String>("SKT Sorgu");
         irsaliyeNoColumn = new TableColumn<Product,String>("İrsaliye No");
@@ -69,6 +69,7 @@ public class ProductExitScene {
         hBoxBot.getChildren().addAll(queryItemInput,queryItemQuantity,buttonQuery,returnButton);
 
         mainBox.getChildren().addAll(hBoxTop, hBoxBot);
+        mainBox.getStylesheets().add("viper.css");
         return new Scene(mainBox);
     }
 
@@ -92,7 +93,7 @@ public class ProductExitScene {
                 else{
                     queryResult =
                             mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM cikisdepo WHERE " +
-                                    "urunAdi LIKE \"%"+queryItemName+"%\" AND urunMiktari=\"%"+queryItemAmount+"%\";");
+                                    "urunAdi LIKE \"%"+queryItemName+"%\" AND urunMiktari="+queryItemAmount+";");
                 }
                 tableView1.setItems(queryResult);
                 // TODO Make the query according to our day's standards you big yoshi.

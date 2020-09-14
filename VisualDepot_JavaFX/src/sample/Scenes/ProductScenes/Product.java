@@ -117,4 +117,8 @@ public class Product{
     public String getIsExpired() {
         return isExpired;
     }
+
+    public void setIsExpired(String isExpired) {
+        this.isExpired = isExpired;
+    }
 }

@@ -9,12 +9,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import sample.Boxes.AlertBox;
 import sample.Boxes.ConfirmBox;
 import sample.Database.MySQLConnection;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.Period;
 
 public class ProductQueryScene {
 
@@ -46,7 +46,7 @@ public class ProductQueryScene {
         //Buttons   
         Button buttonQuery = new Button("Sorgula");
         Button buttonExit = new Button("Kullan / Revize et");
-        Button returnButton = new Button("Return");
+        Button returnButton = new Button("Geri dön");
         buttonQuery.setMinWidth(100);
         buttonExit.setMinWidth(100);
         returnButton.setMinWidth(100);
@@ -80,7 +80,14 @@ public class ProductQueryScene {
 
         //TableView<Product> tableView1
         //setOnAction methods:
-        buttonQuery.setOnAction(e->buttonQueryClicked());
+        buttonQuery.setOnAction(e->{
+            try{
+                buttonQueryClicked();
+            }
+            catch (Exception e1){
+                new AlertBox().display(e1.getLocalizedMessage());
+            }
+        });
 
 
         returnButton.setOnAction(e->{
@@ -92,6 +99,13 @@ public class ProductQueryScene {
                 buttonExitClicked();
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
+
+            }
+            catch (Exception e1){
+                if (e1.getMessage().equals("For input string: \"\"")){
+                    new AlertBox().display("Mal çıkışı yapabilmek için ürün adını ve miktarını doğru yazdığınızdan emin olunuz.");
+                }
+
             }
         });
 
@@ -117,9 +131,10 @@ public class ProductQueryScene {
         secondRow.setAlignment(Pos.CENTER_LEFT);
         mainBox.getChildren().addAll(firstColumn,secondRow);
         //vBox1.setPadding(new Insets(100));
+        mainBox.getStylesheets().add("viper.css");
         return new Scene(mainBox);
     }
-
+    //TODO Make sure to revise the products that has expired.
     private void buttonQueryClicked() {
         final String queryItemName= queryItemInput.getText().toUpperCase();
         final String queryItemAmount = queryItemQuantity.getText();
@@ -162,65 +177,87 @@ public class ProductQueryScene {
 
     private void buttonExitClicked() throws SQLException {
         {
-            //TODO https://stackoverflow.com/questions/19821736/mysql-move-rows-from-one-table-to-another
-            //TODO çıkışı yapılacak ürünün miktarını vs. değiştir.
             final String queryItemName= queryItemInput.getText().toUpperCase(); // BPC1124
             int queryItemAmount= Integer.parseInt(queryItemQuantity.getText()); // 1500
-
-
+            final int queryItemAmountOriginal = Integer.parseInt(queryItemQuantity.getText());
+            int totalAvailableAmount =0;
+            int totalToBeRevised = 0;
+            queryResult =
+                    mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM urundepo WHERE " +
+                            "urunAdi=\""+queryItemName+"\" ORDER BY SKTTarihi ASC;");
 
             Product productToBeSent = new Product();
             boolean alert = ConfirmBox.display("Depo Görsel",queryItemName +" Adlı üründen "+ queryItemAmount + " adet çıkış yapmak istiyor musunuz?");
+
             /*
-            * for (int i = 0; i < queryResult.size(); i++) {
-                Period periodBetweenExpirationAndNow = Period.between(queryResult.get(i).getSKTTarihi(),LocalDate.now().plusDays(1));
-                {
-                    System.out.println("periodBetweenExpirationAndNow = " + periodBetweenExpirationAndNow);
-                }
-            }*/
-            for (int i = 0; i < queryResult.size(); i++) {
-
-            }
-            if(alert){
-                productToBeSent = queryResult.get(0);
-                if (queryItemAmount > productToBeSent.getUrunMiktari()){
-                    System.out.println(1 + ".  " + queryItemAmount + ">" + productToBeSent.getUrunMiktari());
-                    mySQLConnection.queryToDB("INSERT INTO cikisdepo (irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi,depoSorumlusu) VALUES " +
-                            "(\"" +productToBeSent.getIrsaliyeNo() + "\",\""+productToBeSent.getUrunAdi()+"\","+queryItemAmount+
-                            ",\""+LocalDate.now().toString()+"\",\""+productToBeSent.getSKTTarihi()+"\",\""+productToBeSent.getDepoSorumlusu()+"\");");
-                    queryItemAmount -= productToBeSent.getUrunMiktari();
-                    productToBeSent.setUrunMiktari(0);
-                    mySQLConnection.queryToDB("DELETE FROM urundepo WHERE urunAdi=\""+ productToBeSent.getUrunAdi()+"\" AND urunMiktari="+queryItemAmount+" LIMIT 1;");
-                    //SELECT irsaliyeNo,urunAdi,urunMiktari,SKTTarihi,girisTarihi FROM urundepo WHERE urunAdi="BPC1143" AND urunMiktari=5000 LIMIT 1;
-                }
-                else if(queryItemAmount == productToBeSent.getUrunMiktari()){
-                    System.out.println(2 + ".  " + queryItemAmount + "==" + productToBeSent.getUrunMiktari());
-
-                    mySQLConnection.queryToDB("INSERT INTO cikisdepo (irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi,depoSorumlusu) VALUES " +
-                            "(\"" +productToBeSent.getIrsaliyeNo() + "\",\""+productToBeSent.getUrunAdi()+"\","+queryItemAmount+
-                            ",\""+LocalDate.now().toString()+"\",\""+productToBeSent.getSKTTarihi()+"\",\""+productToBeSent.getDepoSorumlusu()+"\");");
-
-                    productToBeSent.setUrunMiktari(0);
-                    mySQLConnection.queryToDB("DELETE FROM urundepo WHERE urunAdi=\""+ productToBeSent.getUrunAdi()+"\" AND urunMiktari="+queryItemAmount+" LIMIT 1;");
-
-                } // If the required amount equals to
-                else if (queryItemAmount < productToBeSent.getUrunMiktari()){
-                    System.out.println(3 + ".  " + queryItemAmount + "<" + productToBeSent.getUrunMiktari());
-                    //queryitemamount = çıkışı yapılmak istenen miktar
-                    //producttobesent.geturunmiktari() = seçili ürünün miktari
-                    // seçili ürünün miktarı, çıkışı yapılmak istenen miktardan küçük OLAMAZ.
-                    System.out.println(productToBeSent.toString());
-                    mySQLConnection.queryToDB("UPDATE urundepo SET urunMiktari= " +(productToBeSent.getUrunMiktari()-(queryItemAmount))+" WHERE urunAdi= \""+queryItemName+"\" AND urunMiktari="+productToBeSent.getUrunMiktari()+" AND irsaliyeNo=\""+productToBeSent.getIrsaliyeNo()+"\"LIMIT 1;");
-                    productToBeSent.setUrunMiktari(productToBeSent.getUrunMiktari() - queryItemAmount);
-
-                    mySQLConnection.queryToDB("INSERT INTO cikisdepo (irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi,depoSorumlusu) VALUES " +
-                            "(\"" +productToBeSent.getIrsaliyeNo() + "\",\""+productToBeSent.getUrunAdi()+"\","+queryItemAmount+
-                            ",\""+LocalDate.now().toString()+"\",\""+productToBeSent.getSKTTarihi()+"\",\""+productToBeSent.getDepoSorumlusu()+"\");");
-
-                    System.out.println("productToBeSent.getUrunMiktari() = " + productToBeSent.getUrunMiktari());
-                    System.out.println("queryItemAmount = " + queryItemAmount);
+            * queryItemAmount = required amount by the end-user
+            * productToBeSent.getUrunMiktari() = current product's urunMiktari.
+            * */
+            if (alert){
+                for (int i = 0; i < queryResult.size(); i++) {
+                    productToBeSent = queryResult.get(i);
+                    if (productToBeSent.getIsExpired().equals("Son Kullanım Tarihi Geçmemiş")){
+                        totalAvailableAmount += productToBeSent.getUrunMiktari();
                     }
+                    else{
+                        mySQLConnection.queryToDB("UPDATE urundepo SET SKTTarihi=\""+LocalDate.now().plusMonths(1).toString()+"\" WHERE irsaliyeNo=\""+productToBeSent.getIrsaliyeNo()+"\"");
+                        queryResult.get(i).setSKTTarihi(LocalDate.now().plusMonths(1));
+                        queryResult.get(i).setIsExpired("Son Kullanım Tarihi Geçmemiş");
+                        totalToBeRevised += productToBeSent.getUrunMiktari();
+                        System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+                        System.out.println("productToBeSent.toString() = " + productToBeSent.toString());
+                        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+                    }// If being able to revise is an INSTANT procedure, which doesn't need any time at all, what needs to be done here is going to be just updating the row inside the table.
                 }
+                int count = 0;
+                productToBeSent = queryResult.get(count);
+                System.out.println("totalAvailableAmount = " + totalAvailableAmount);
+                System.out.println("totalToBeRevised = " + totalToBeRevised);
+                if (totalAvailableAmount >= queryItemAmountOriginal){
+                    while (queryItemAmount > 0 && count < queryResult.size()){
+                        //4020 > 4000
+                        if (queryItemAmount > productToBeSent.getUrunMiktari()){
+                            System.out.println(2 + ".  " + queryItemAmount + ">" + productToBeSent.getUrunMiktari());
+
+                            mySQLConnection.queryToDB("DELETE FROM urundepo WHERE urunAdi=\""+ productToBeSent.getUrunAdi()+"\" AND urunMiktari="+productToBeSent.getUrunMiktari()+" LIMIT 1;");
+                            queryItemAmount -= productToBeSent.getUrunMiktari();
+                            System.out.println("queryItemAmount = " + queryItemAmount);
+                            totalAvailableAmount += productToBeSent.getUrunMiktari();
+                            productToBeSent.setUrunMiktari(0);
+                            productToBeSent = queryResult.get(++count);
+                        }
+                        else if(queryItemAmount == productToBeSent.getUrunMiktari()){
+                            System.out.println(3 + ".  " + queryItemAmount + "==" + productToBeSent.getUrunMiktari());
+
+                            mySQLConnection.queryToDB("DELETE FROM urundepo WHERE urunAdi=\""+ productToBeSent.getUrunAdi()+"\" AND urunMiktari="+queryItemAmount+" LIMIT 1;");
+                            totalAvailableAmount += productToBeSent.getUrunMiktari();
+                            productToBeSent.setUrunMiktari(0);
+                            queryItemAmount=0;
+                        }
+                        else if (queryItemAmount < productToBeSent.getUrunMiktari()){
+                            System.out.println(1 + ".  " + queryItemAmount + "<" + productToBeSent.getUrunMiktari());
+                            //queryitemamount = çıkışı yapılmak istenen miktar
+                            //producttobesent.geturunmiktari() = seçili ürünün miktari
+                            // seçili ürünün miktarı, çıkışı yapılmak istenen miktardan küçük OLAMAZ.
+                            System.out.println(productToBeSent.toString());
+                            mySQLConnection.queryToDB("UPDATE urundepo SET urunMiktari= " +(productToBeSent.getUrunMiktari()-(queryItemAmount))+" WHERE urunAdi= \""+queryItemName+"\" AND urunMiktari="+productToBeSent.getUrunMiktari()+" AND irsaliyeNo=\""+productToBeSent.getIrsaliyeNo()+"\"LIMIT 1;");
+                            productToBeSent.setUrunMiktari(productToBeSent.getUrunMiktari() - queryItemAmount);
+                            queryItemAmount=0;
+
+                            System.out.println("productToBeSent.getUrunMiktari() = " + productToBeSent.getUrunMiktari());
+                            System.out.println("queryItemAmount = " + queryItemAmount);
+                        }
+                    }
+                    mySQLConnection.queryToDB("INSERT INTO cikisdepo (irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi,depoSorumlusu) VALUES " +
+                            "(\"" +productToBeSent.getIrsaliyeNo() + "\",\""+productToBeSent.getUrunAdi()+"\","+queryItemAmountOriginal+
+                            ",\""+LocalDate.now().toString()+"\",\""+productToBeSent.getSKTTarihi()+"\",\""+productToBeSent.getDepoSorumlusu()+"\");");
+
+                }
+                else{
+                    new AlertBox().display("Deponuzda "+productToBeSent.getUrunAdi()+" ürününden "+queryItemAmount+" adet bulunmamaktadır.\nDeponuzda "+productToBeSent.getUrunAdi()+" ürününden toplam "
+                    +totalAvailableAmount+ " adet bulunmaktadır.\nRevize edilmesi gereken miktar: "+totalToBeRevised+" adettir.");
+                }
+            }
 
 
                 //TODO the problem is there is a data conflict when trying to make exit of multiple attributes with the same irsaliyeNo because the irsaliyeNo is the primary key and unique identifier of the elements

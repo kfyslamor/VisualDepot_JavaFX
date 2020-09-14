@@ -3,6 +3,7 @@ package sample.Database;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import sample.Boxes.AlertBox;
 import sample.Scenes.ProductScenes.Product;
 
 import java.sql.*;
@@ -78,7 +79,7 @@ public class MySQLConnection {
      *
      * @param SQLQuery
      * @return returns an ObservableList<Product>
-     * @throws ClassNotFoundException
+     * @throws ClassNotFoundException = throws this exception if Class.forName() can't register the driver.
      * @throws SQLException
      */
     public ObservableList<Product> getTable(String SQLQuery) throws SQLException {
@@ -92,6 +93,7 @@ public class MySQLConnection {
             rs = st.executeQuery(SQLQuery); // RETURNS THE TABLE STRUCTURE YOU HAVE REQUESTED
         }
         catch(Exception e){
+            new AlertBox().display("Lütfen girdiğiniz değerleri kontrol ediniz.");
             e.printStackTrace();
         }
 
@@ -144,7 +146,7 @@ public class MySQLConnection {
 
     /**
      *
-     * @param name
+     * @param name = end-user's input for "user-name" attribute.
      * @return hashes the user input and then compares the hashed version fetched from the database.
      * function returns true, if there is a match in the database.
      * returns false if there isn't a match in the database.
@@ -186,7 +188,9 @@ public class MySQLConnection {
             System.out.println("NO MATCH FOR THE NAME");
             System.out.println(requiredPass);
             System.out.println(" ^^ ");
-            Platform.exit();
+            //new AlertBox().display("Üzgünüz, bu kullanıcı adı mevcut değil.");
+            //Platform.exit();
+
             return null;
         }
     }

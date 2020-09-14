@@ -14,22 +14,19 @@ public class ProductMenu {
         Button productEntry = new Button("Mal Kayıt");
         Button productQuery = new Button("Mal Sorgu");
         Button productExit = new Button("Mal Çıkış");
+        Button logoutButton =new Button("Güvenli Çıkış");
         VBox vBox1 = new VBox(50);
         vBox1.setPadding(new Insets(100));
         vBox1.setAlignment(Pos.CENTER);
         //setOnAction:
-        productEntry.setOnAction(e->{
-            primaryStage.setScene(new ProductEntryScene().display(primaryStage, productMenu));
-        });
-        productQuery.setOnAction(e->{
-            primaryStage.setScene(new ProductQueryScene().display(primaryStage,productMenu));
-        });
-        productExit.setOnAction(e->{
-            primaryStage.setScene(new ProductExitScene().display(primaryStage,productMenu));
-        });
+        productEntry.setOnAction(e-> primaryStage.setScene(new ProductEntryScene().display(primaryStage, productMenu)));
+        productQuery.setOnAction(e-> primaryStage.setScene(new ProductQueryScene().display(primaryStage,productMenu)));
+        productExit.setOnAction(e-> primaryStage.setScene(new ProductExitScene().display(primaryStage,productMenu)));
+        logoutButton.setOnAction(e-> primaryStage.setScene(returnScene));
         //GUI Components:
-        vBox1.getChildren().addAll(productEntry,productQuery,productExit);
+        vBox1.getChildren().addAll(productEntry,productQuery,productExit,logoutButton);
         productMenu = new Scene(vBox1);
+        productMenu.getStylesheets().add("viper.css");
         return productMenu;
     }
 }

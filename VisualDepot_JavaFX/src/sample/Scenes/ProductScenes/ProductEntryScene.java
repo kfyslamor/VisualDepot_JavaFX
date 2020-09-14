@@ -123,6 +123,7 @@ public class ProductEntryScene {
         returnButton.setOnAction(e->{
             primaryStage.setScene(scene1);
         });
+        hBoxMain.getStylesheets().add("viper.css");
         return new Scene(hBoxMain);
     }
 }

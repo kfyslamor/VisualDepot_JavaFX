@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import sample.Boxes.AlertBox;
 import sample.Database.MySQLConnection;
 import sample.Scenes.ProductScenes.ProductEntryScene;
 import sample.Scenes.ProductScenes.ProductMenu;
@@ -59,12 +60,19 @@ public class LoginScene {
                         System.out.println("--- LOGIN SUCCESSFUL ---");
                         primaryStage.setScene(new ProductMenu().display(primaryStage, scene1));
                     }
+                    else{
+                        new AlertBox().display("Hatalı giriş yaptınız!");
+                    }
                 } catch (SQLException sqlException) {
                     sqlException.printStackTrace();
+                }
+                catch (Exception e1){
+                    new AlertBox().display(e1.getMessage());
                 }
 
             }
             else {
+                new AlertBox().display("Hatalı giriş yaptınız.");
                 System.out.println("WRONG FORM OF INPUT:");
                 System.out.println("name = " + name);
                 System.out.println("password = " + password);
@@ -83,6 +91,7 @@ public class LoginScene {
         primaryStage.setWidth(1366);
         grid.setAlignment(Pos.CENTER);
         grid.getChildren().addAll(nameLabel,nameInput,passLabel,passField,loginButton,returnButton);
+        grid.getStylesheets().add("viper.css");
         return new Scene(grid);
     }
     private boolean checkInput(String name,String password){
