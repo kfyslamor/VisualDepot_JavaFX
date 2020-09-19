@@ -10,12 +10,12 @@
 .button:focused{
 	-fx-background-color: darkslateblue;
 	-fx-text-fill: white;
-    -fx-border-color: Black;
+    -fx-border-color: White;
     -fx-border-width: 2;
     -fx-border-color: #0093EF;
 }
 .label{
-    -fx-text-fill:white;   
+    -fx-text-fill: White;
     -fx-font-size:15;
 }
 /*

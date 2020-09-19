@@ -10,11 +10,11 @@ import static javafx.stage.Modality.APPLICATION_MODAL;
 
 public class ConfirmBox {
     static boolean answer;
-    public static boolean display(String title,String question){
+    public static boolean display(String question){
         //Declarations:
         int count=0;
         Stage stagePopup = new Stage();
-        stagePopup.setTitle(title);
+        stagePopup.setTitle("Depo Görsel");
         Button yesB = new Button("Evet");
         Button noB = new Button("Hayır");
         Label labelQuestion = new Label(question);

@@ -77,31 +77,27 @@ public class ProductExitScene {
             final String queryItemName= queryItemInput.getText().toUpperCase();
             final String queryItemAmount = queryItemQuantity.getText();
 
-            try {
-                if (queryItemName.equals("") && queryItemAmount.equals("")){
-                    queryResult =
-                            mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM cikisdepo;");
-                }// if both of the inputs are empty show all of the products.
-                else if (!(queryItemName.equals("")) && queryItemAmount.equals("")){
-                    queryResult =mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM cikisdepo WHERE " +
-                            "urunAdi LIKE \"%"+queryItemName+"%\";");
-                }// IF name section NOT empty AND number section empty
-                else if((queryItemName.equals("")) && !queryItemAmount.equals("")){
-                    queryResult =mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM cikisdepo WHERE " +
-                            "urunMiktari LIKE \"%"+queryItemAmount+"%\";");
-                }// IF name section empty AND number section NOT empty
-                else{
-                    queryResult =
-                            mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM cikisdepo WHERE " +
-                                    "urunAdi LIKE \"%"+queryItemName+"%\" AND urunMiktari="+queryItemAmount+";");
-                }
-                tableView1.setItems(queryResult);
-                // TODO Make the query according to our day's standards you big yoshi.
+        if (queryItemName.equals("") && queryItemAmount.equals("")){
+            queryResult =
+                    mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM cikisdepo;");
+        }// if both of the inputs are empty show all of the products.
+        else if (!(queryItemName.equals("")) && queryItemAmount.equals("")){
+            queryResult =mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM cikisdepo WHERE " +
+                    "urunAdi LIKE \"%"+queryItemName+"%\";");
+        }// IF name section NOT empty AND number section empty
+        else if((queryItemName.equals("")) && !queryItemAmount.equals("")){
+            queryResult =mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM cikisdepo WHERE " +
+                    "urunMiktari LIKE \"%"+queryItemAmount+"%\";");
+        }// IF name section empty AND number section NOT empty
+        else{
+            queryResult =
+                    mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM cikisdepo WHERE " +
+                            "urunAdi LIKE \"%"+queryItemName+"%\" AND urunMiktari="+queryItemAmount+";");
+        }
+        tableView1.setItems(queryResult);
+        // TODO Make the query according to our day's standards you big yoshi.
 
-            } catch (SQLException sqlException) {
-                sqlException.printStackTrace();
-            }
-            //tableView1.setItems(queryResult);
+        //tableView1.setItems(queryResult);
             irsaliyeNoColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("irsaliyeNo"));
             urunAdiColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("urunAdi"));
             urunMiktariColumn.setCellValueFactory(new PropertyValueFactory<Product,Integer>("urunMiktari"));

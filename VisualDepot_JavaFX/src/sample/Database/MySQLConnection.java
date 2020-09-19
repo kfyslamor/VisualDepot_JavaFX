@@ -82,35 +82,37 @@ public class MySQLConnection {
      * @throws ClassNotFoundException = throws this exception if Class.forName() can't register the driver.
      * @throws SQLException
      */
-    public ObservableList<Product> getTable(String SQLQuery) throws SQLException {
+    public ObservableList<Product> getTable(String SQLQuery) {
         Statement st=null;
         ResultSet rs=null;
         Connection con = null;
+        ObservableList<Product> queryResult = FXCollections.observableArrayList();
         try{
             Class.forName(DRIVER_URL);
             con = DriverManager.getConnection(DB_URL,UN,PW);
             st = con.createStatement();
             rs = st.executeQuery(SQLQuery); // RETURNS THE TABLE STRUCTURE YOU HAVE REQUESTED
+
+            // System.out.println("irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi,depoSorumlusu");
+            System.out.println("VV Requested Products VV");
+            while(rs.next()){
+                queryResult.add(new Product(rs.getString("irsaliyeNo"),rs.getString("urunAdi"),rs.getInt("urunMiktari"),LocalDate.parse(rs.getString("girisTarihi")) ,LocalDate.parse(rs.getString("SKTTarihi"))));
+                System.out.println("--------------------------------------------------------------------------------------------------------------------");
+                System.out.println(new Product(rs.getString("irsaliyeNo"),rs.getString("urunAdi"), rs.getInt("urunMiktari"),LocalDate.parse(rs.getString("girisTarihi")) , LocalDate.parse(rs.getString("SKTTarihi"))));
+                //System.out.println(name);
+            } //urun adi,miktar, SKT
+            //TODO https://howtodoinjava.com/java/date-time/localdate-format-example/ change the format to dd-MM-YY
+
+            con.close();
+            st.close();
+            rs.close();
         }
         catch(Exception e){
             new AlertBox().display("Lütfen girdiğiniz değerleri kontrol ediniz.");
             e.printStackTrace();
         }
 
-        ObservableList<Product> queryResult = FXCollections.observableArrayList();
-        // System.out.println("irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi,depoSorumlusu");
-        System.out.println("VV Requested Products VV");
-        while(rs.next()){
-            queryResult.add(new Product(rs.getString("irsaliyeNo"),rs.getString("urunAdi"),rs.getInt("urunMiktari"),LocalDate.parse(rs.getString("girisTarihi")) ,LocalDate.parse(rs.getString("SKTTarihi"))));
-            System.out.println("--------------------------------------------------------------------------------------------------------------------");
-            System.out.println(new Product(rs.getString("irsaliyeNo"),rs.getString("urunAdi"), rs.getInt("urunMiktari"),LocalDate.parse(rs.getString("girisTarihi")) , LocalDate.parse(rs.getString("SKTTarihi"))));
-            //System.out.println(name);
-        } //urun adi,miktar, SKT
-        //TODO https://howtodoinjava.com/java/date-time/localdate-format-example/ change the format to dd-MM-YY
 
-        con.close();
-        st.close();
-        rs.close();
         //System.out.println("Connection is closed.");
         // we need a class that implements Connection or we need to search for a method
         // which will return an instance of Connection.

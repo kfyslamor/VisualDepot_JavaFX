@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import sample.Boxes.AlertBox;
@@ -19,47 +20,52 @@ import sample.Scenes.LoginScene;
 import sample.Scenes.ProductScenes.Product;
 import sample.Scenes.SignupScene;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        //root.getStylesheets().add(getClass().getResource("/resources/CSS/viper.css").toString());
-        primaryStage.setTitle("Depo Görsel");
-        primaryStage.setMinWidth(1366);
-        primaryStage.setMinHeight(768);
-        primaryStage.setMaxWidth(1366);
-        primaryStage.setMaxHeight(768);
+        //Parent root = FXMLLoader.load(getClass().getResource("BasicApplication_css.fxml"));
+        //root.getStylesheets().add(getClass().getResource("..\\viper.css").toString());
+        // Create the FXMLLoader
+        //FXMLLoader loader = new FXMLLoader();
+        // Path to the FXML File
+
         Scene mainScene = entryScene(primaryStage);
-        //Application.setUserAgentStylesheet(STYLESHEET_MODENA);
-        mainScene.getStylesheets().add("viper.css");
         primaryStage.setScene(mainScene);
-        Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
-        //StyleManager.getInstance().addUserAgentStylesheet("viper.css");
-
-
-        //StyleManager.getInstance().addUserAgentStylesheet(getClass().getResource("/style.css").toString());
+        mainScene.getStylesheets().add("viper.css");
         primaryStage.setOnCloseRequest(e->{
             e.consume();
-            boolean answer = ConfirmBox.display(primaryStage.getTitle(),"Uygulamadan çıkış yapmak istediğinize emin misiniz?");
+            boolean answer = ConfirmBox.display("Uygulamadan çıkış yapmak istediğinize emin misiniz?");
             if (answer){
                 Platform.exit();
             }
         });
         primaryStage.show();
+        primaryStage.setTitle("Depo Görsel");
+        primaryStage.setMinWidth(1366);
+        primaryStage.setMinHeight(768);
+        primaryStage.setMaxWidth(1366);
+        primaryStage.setMaxHeight(768);
     }
-    private Scene entryScene(Stage primaryStage){
+    private Scene entryScene(Stage primaryStage) throws IOException {
         //Declarations:
+        FXMLLoader loader = new FXMLLoader();
+        String fxmlDocPath = "C:\\Users\\Utku\\IdeaProjects\\ACTUALLY WORTH SOMETHING\\VisualDepot_JavaFX\\src\\sample\\FXML\\BasicApplication_css.fxml";
+        FileInputStream fxmlStream = new FileInputStream(fxmlDocPath);
+
         Scene scene1;
+        //VBox vBoxFXML = loader.load(fxmlStream);
         VBox vBox1 = new VBox(50);
         vBox1.setPadding(new Insets(10));
         vBox1.setAlignment(Pos.CENTER);
         Button but1 = new Button("Giriş");
         Button signupButton = new Button("Kayıt Ol");
         //GUI Components:
-        setUserAgentStylesheet(STYLESHEET_MODENA);
+        //setUserAgentStylesheet(STYLESHEET_MODENA);
         vBox1.getChildren().addAll(but1,signupButton);
         scene1 = new Scene(vBox1);
 

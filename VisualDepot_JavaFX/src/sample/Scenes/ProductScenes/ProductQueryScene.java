@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import sample.Boxes.AlertBox;
 import sample.Boxes.ConfirmBox;
+import sample.Boxes.DatePickerBox;
 import sample.Database.MySQLConnection;
 
 import java.sql.SQLException;
@@ -45,7 +46,8 @@ public class ProductQueryScene {
         queryItemQuantity.setPromptText("Depodan çekilecek ürünün miktarını giriniz.");
         //Buttons   
         Button buttonQuery = new Button("Sorgula");
-        Button buttonExit = new Button("Kullan / Revize et");
+        Button buttonExit = new Button("Kullan");
+        Button buttonRevise = new Button("Revize et");
         Button returnButton = new Button("Geri dön");
         buttonQuery.setMinWidth(100);
         buttonExit.setMinWidth(100);
@@ -88,6 +90,14 @@ public class ProductQueryScene {
                 new AlertBox().display(e1.getLocalizedMessage());
             }
         });
+        buttonRevise.setOnAction(e->{
+            try{
+                buttonReviseClicked();
+            }
+            catch (Exception e1){
+                new AlertBox().display(e1.getLocalizedMessage());
+            }
+        });
 
 
         returnButton.setOnAction(e->{
@@ -121,7 +131,7 @@ public class ProductQueryScene {
         tableView2.setMinWidth(250);
         VBox firstColumn = new VBox(25);
         HBox secondRow = new HBox(20);
-        firstColumn.getChildren().addAll(queryItemInput,queryItemQuantity,buttonQuery,buttonExit,returnButton);
+        firstColumn.getChildren().addAll(queryItemInput,queryItemQuantity,buttonQuery,buttonExit,buttonRevise,returnButton);
         secondRow.getChildren().addAll(tableView1,tableView2);
         GridPane.setConstraints(firstColumn,0,0);
         GridPane.setConstraints(secondRow,1,0);
@@ -134,35 +144,70 @@ public class ProductQueryScene {
         mainBox.getStylesheets().add("viper.css");
         return new Scene(mainBox);
     }
+
+    private void buttonReviseClicked() throws Exception{
+        final String queryItemName= queryItemInput.getText().toUpperCase();
+        final String queryItemAmount = queryItemQuantity.getText();
+        int totalToBeRevised = 0;
+        Product productToBeSent;
+        boolean alert = false;
+        if (!queryItemName.equals("") && !queryItemAmount.equals("")){
+            alert = ConfirmBox.display(queryItemName +" adlı üründen "+ queryItemAmount + " adet revize etmek istiyor musunuz?");
+            /*queryResult =
+                    mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM urundepo WHERE " +
+                            "urunAdi=\""+queryItemName+"\" AND urunMiktari="+queryItemAmount+" ORDER BY SKTTarihi ASC LIMIT 1;");*/
+        }
+        else{
+            new AlertBox().display("Lütfen girdiğiniz değerleri kontrol ediniz.");
+        }
+
+        if (alert){
+            /*            for (int i = 0; i < queryResult.size(); i++) {
+                productToBeSent = queryResult.get(i);
+                if (productToBeSent.getIsExpired().equals("SON KULLANIM TARİHİ GEÇMİŞ")){
+                    totalToBeRevised += productToBeSent.getUrunMiktari();
+                }
+            }
+            */
+            //alert2 = ConfirmBox.display(queryItemName + " adlı üründen "+queryItemAmount+" adet revize etmek istiyor musunuz?");
+            String newExpirationDate=null;
+
+            newExpirationDate = new DatePickerBox().display("Yeni son kullanma tarihini giriniz.");
+
+            if (newExpirationDate!=null){
+                mySQLConnection.queryToDB("UPDATE urundepo SET SKTTarihi=\""+ newExpirationDate +"\" WHERE urunAdi=\""+queryItemName+"\" AND urunMiktari="+queryItemAmount+" LIMIT 1;");
+            }
+            else{
+                System.out.println("ERROR");
+            }
+        }
+    }
+
     //TODO Make sure to revise the products that has expired.
     private void buttonQueryClicked() {
         final String queryItemName= queryItemInput.getText().toUpperCase();
         final String queryItemAmount = queryItemQuantity.getText();
 
-        try {
-            if (queryItemName.equals("") && queryItemAmount.equals("")){
-                queryResult =
-                        mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM urundepo ORDER BY SKTTarihi ASC;");
-            }// if both of the inputs are empty show all of the products.
-            else if (!(queryItemName.equals("")) && queryItemAmount.equals("")){
-                queryResult =mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM urundepo WHERE " +
-                        "urunAdi LIKE \"%"+queryItemName+"%\" ORDER BY SKTTarihi ASC;");
-            }// IF name section NOT empty AND number section empty
-            else if((queryItemName.equals("")) && !queryItemAmount.equals("")){
-                queryResult =mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM urundepo WHERE " +
-                        "urunMiktari>"+queryItemAmount+" ORDER BY SKTTarihi ASC;");
-            }// IF name section empty AND number section NOT empty
-            else{
-                queryResult =
-                        mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM urundepo WHERE " +
-                                "urunAdi LIKE \"%"+queryItemName+"%\" AND urunMiktari>="+queryItemAmount+" ORDER BY SKTTarihi ASC;");
-            }
-            tableView1.setItems(queryResult);
-            // TODO Make the query according to our day's standards you big yoshi.
-
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+        if (queryItemName.equals("") && queryItemAmount.equals("")){
+            queryResult =
+                    mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM urundepo ORDER BY SKTTarihi ASC;");
+        }// if both of the inputs are empty show all of the products.
+        else if (!(queryItemName.equals("")) && queryItemAmount.equals("")){
+            queryResult =mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM urundepo WHERE " +
+                    "urunAdi= \""+queryItemName+"\" ORDER BY SKTTarihi ASC;");
+        }// IF name section NOT empty AND number section empty
+        else if((queryItemName.equals("")) && !queryItemAmount.equals("")){
+            queryResult =mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM urundepo WHERE " +
+                    "urunMiktari>"+queryItemAmount+" ORDER BY SKTTarihi ASC;");
+        }// IF name section empty AND number section NOT empty
+        else{
+            queryResult =
+                    mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM urundepo WHERE " +
+                            "urunAdi= \""+queryItemName+"\" AND urunMiktari>="+queryItemAmount+" ORDER BY SKTTarihi ASC;");
         }
+        tableView1.setItems(queryResult);
+        // TODO Make the query according to our day's standards you big yoshi.
+
         //tableView1.setItems(queryResult);
         //irsaliyeNoColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("irsaliyeNo"));
         urunAdiColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("urunAdi"));
@@ -177,8 +222,8 @@ public class ProductQueryScene {
 
     private void buttonExitClicked() throws SQLException {
         {
-            final String queryItemName= queryItemInput.getText().toUpperCase(); // BPC1124
-            int queryItemAmount= Integer.parseInt(queryItemQuantity.getText()); // 1500
+            final String queryItemName= queryItemInput.getText().toUpperCase();
+            int queryItemAmount= Integer.parseInt(queryItemQuantity.getText());
             final int queryItemAmountOriginal = Integer.parseInt(queryItemQuantity.getText());
             int totalAvailableAmount =0;
             int totalToBeRevised = 0;
@@ -186,8 +231,9 @@ public class ProductQueryScene {
                     mySQLConnection.getTable("SELECT irsaliyeNo,urunAdi,urunMiktari,girisTarihi,SKTTarihi FROM urundepo WHERE " +
                             "urunAdi=\""+queryItemName+"\" ORDER BY SKTTarihi ASC;");
 
-            Product productToBeSent = new Product();
-            boolean alert = ConfirmBox.display("Depo Görsel",queryItemName +" Adlı üründen "+ queryItemAmount + " adet çıkış yapmak istiyor musunuz?");
+            Product productToBeSent;
+            boolean alert = false;
+            alert = ConfirmBox.display(queryItemName +" Adlı üründen "+ queryItemAmount + " adet çıkış yapmak istiyor musunuz?");
 
             /*
             * queryItemAmount = required amount by the end-user
@@ -199,15 +245,6 @@ public class ProductQueryScene {
                     if (productToBeSent.getIsExpired().equals("Son Kullanım Tarihi Geçmemiş")){
                         totalAvailableAmount += productToBeSent.getUrunMiktari();
                     }
-                    else{
-                        mySQLConnection.queryToDB("UPDATE urundepo SET SKTTarihi=\""+LocalDate.now().plusMonths(1).toString()+"\" WHERE irsaliyeNo=\""+productToBeSent.getIrsaliyeNo()+"\"");
-                        queryResult.get(i).setSKTTarihi(LocalDate.now().plusMonths(1));
-                        queryResult.get(i).setIsExpired("Son Kullanım Tarihi Geçmemiş");
-                        totalToBeRevised += productToBeSent.getUrunMiktari();
-                        System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
-                        System.out.println("productToBeSent.toString() = " + productToBeSent.toString());
-                        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-                    }// If being able to revise is an INSTANT procedure, which doesn't need any time at all, what needs to be done here is going to be just updating the row inside the table.
                 }
                 int count = 0;
                 productToBeSent = queryResult.get(count);

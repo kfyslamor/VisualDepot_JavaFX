@@ -64,6 +64,7 @@ public class LoginScene {
                         new AlertBox().display("Hatalı giriş yaptınız!");
                     }
                 } catch (SQLException sqlException) {
+
                     sqlException.printStackTrace();
                 }
                 catch (Exception e1){
