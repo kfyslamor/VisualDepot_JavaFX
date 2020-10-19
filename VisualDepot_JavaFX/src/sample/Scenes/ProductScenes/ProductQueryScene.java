@@ -36,7 +36,6 @@ public class ProductQueryScene {
 
     ObservableList<Product> queryResult;
     MySQLConnection mySQLConnection = new MySQLConnection();
-    Product queryExit;
     TextField queryItemInput = new TextField();
     TextField queryItemQuantity = new TextField();
     public Scene display(Stage primaryStage, Scene returnScene) {
@@ -68,17 +67,17 @@ public class ProductQueryScene {
 
 
         //urunAdi column
-        urunAdiColumn = new TableColumn<Product, String>("Ürün Adı");
-        urunAdiColumn2 = new TableColumn<Product, String>("Ürün Adı");
+        urunAdiColumn = new TableColumn<>("Ürün Adı");
+        urunAdiColumn2 = new TableColumn<>("Ürün Adı");
         //urunMiktari column
-        urunMiktariColumn = new TableColumn<Product, Integer>("Ürün Miktarı");
-        urunMiktariColumn2 = new TableColumn<Product, Integer>("Ürün Miktarı");
+        urunMiktariColumn = new TableColumn<>("Ürün Miktarı");
+        urunMiktariColumn2 = new TableColumn<>("Ürün Miktarı");
         //SKTTarihi column
-        SKTTarihiColumn = new TableColumn<Product, LocalDate>("Son Kullanım Tarihi");
-        SKTTarihiColumn2 = new TableColumn<Product, LocalDate>("Son Kullanım Tarihi");
+        SKTTarihiColumn = new TableColumn<>("Son Kullanım Tarihi");
+        SKTTarihiColumn2 = new TableColumn<>("Son Kullanım Tarihi");
         //isExpired column
-        isExpiredColumn = new TableColumn<Product, String>("SKT Sorgu");
-        isExpiredColumn2 = new TableColumn<Product, String>("SKT Sorgu");
+        isExpiredColumn = new TableColumn<>("SKT Sorgu");
+        isExpiredColumn2 = new TableColumn<>("SKT Sorgu");
 
         //TableView<Product> tableView1
         //setOnAction methods:
@@ -100,9 +99,7 @@ public class ProductQueryScene {
         });
 
 
-        returnButton.setOnAction(e->{
-            primaryStage.setScene(returnScene);
-        });
+        returnButton.setOnAction(e-> primaryStage.setScene(returnScene));
 
         buttonExit.setOnAction(e-> {
             try {
@@ -149,8 +146,10 @@ public class ProductQueryScene {
         final String queryItemName= queryItemInput.getText().toUpperCase();
         final String queryItemAmount = queryItemQuantity.getText();
         int totalToBeRevised = 0;
-        Product productToBeSent;
         boolean alert = false;
+        for (int i = 0; i < queryResult.size(); i++) {
+
+        }
         if (!queryItemName.equals("") && !queryItemAmount.equals("")){
             alert = ConfirmBox.display(queryItemName +" adlı üründen "+ queryItemAmount + " adet revize etmek istiyor musunuz?");
             /*queryResult =
@@ -210,10 +209,10 @@ public class ProductQueryScene {
 
         //tableView1.setItems(queryResult);
         //irsaliyeNoColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("irsaliyeNo"));
-        urunAdiColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("urunAdi"));
-        urunMiktariColumn.setCellValueFactory(new PropertyValueFactory<Product,Integer>("urunMiktari"));
-        SKTTarihiColumn.setCellValueFactory(new PropertyValueFactory<Product,LocalDate>("SKTTarihi"));
-        isExpiredColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("isExpired"));
+        urunAdiColumn.setCellValueFactory(new PropertyValueFactory<>("urunAdi"));
+        urunMiktariColumn.setCellValueFactory(new PropertyValueFactory<>("urunMiktari"));
+        SKTTarihiColumn.setCellValueFactory(new PropertyValueFactory<>("SKTTarihi"));
+        isExpiredColumn.setCellValueFactory(new PropertyValueFactory<>("isExpired"));
         //cikisTarihiColumn.setCellValueFactory(new PropertyValueFactory<Product,LocalDate>("girisTarihi"));
         SKTTarihiColumn.setMinWidth(125);
         isExpiredColumn.setMinWidth(200);
@@ -232,7 +231,7 @@ public class ProductQueryScene {
                             "urunAdi=\""+queryItemName+"\" ORDER BY SKTTarihi ASC;");
 
             Product productToBeSent;
-            boolean alert = false;
+            boolean alert;
             alert = ConfirmBox.display(queryItemName +" Adlı üründen "+ queryItemAmount + " adet çıkış yapmak istiyor musunuz?");
 
             /*
@@ -244,6 +243,9 @@ public class ProductQueryScene {
                     productToBeSent = queryResult.get(i);
                     if (productToBeSent.getIsExpired().equals("Son Kullanım Tarihi Geçmemiş")){
                         totalAvailableAmount += productToBeSent.getUrunMiktari();
+                    }
+                    else if(productToBeSent.getIsExpired().equals("SON KULLANIM TARİHİ GEÇMİŞ")){
+                        totalToBeRevised += productToBeSent.getUrunMiktari();
                     }
                 }
                 int count = 0;

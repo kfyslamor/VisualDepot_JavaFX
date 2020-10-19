@@ -1,5 +1,6 @@
 package sample;
 
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import com.sun.javafx.application.PlatformImpl;
 import com.sun.javafx.css.StyleManager;
 import javafx.application.Application;
@@ -16,24 +17,31 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import sample.Boxes.AlertBox;
 import sample.Boxes.ConfirmBox;
+import sample.Database.MySQLConnection;
 import sample.Scenes.LoginScene;
 import sample.Scenes.ProductScenes.Product;
 import sample.Scenes.SignupScene;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) throws Exception {
         //Parent root = FXMLLoader.load(getClass().getResource("BasicApplication_css.fxml"));
         //root.getStylesheets().add(getClass().getResource("..\\viper.css").toString());
         // Create the FXMLLoader
         //FXMLLoader loader = new FXMLLoader();
         // Path to the FXML File
-
+        //MySQLConnection mySQLConnection = new MySQLConnection();
+        //mySQLConnection.getMySQLDataSource();
         Scene mainScene = entryScene(primaryStage);
         primaryStage.setScene(mainScene);
         mainScene.getStylesheets().add("viper.css");

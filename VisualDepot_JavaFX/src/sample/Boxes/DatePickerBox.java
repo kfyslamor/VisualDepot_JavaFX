@@ -17,7 +17,7 @@ public class DatePickerBox {
         Stage stagePopup = new Stage();
         DatePicker datePicker1 = new DatePicker();
         Label label1 = new Label(message);
-        Button button1 =new Button("Tamam.");
+        Button button1 =new Button("Tamam");
         VBox vBox1= new VBox(25);
 
         vBox1.getChildren().addAll(label1,datePicker1,button1);
@@ -37,7 +37,7 @@ public class DatePickerBox {
         stagePopup.setTitle("Depo Görsel");
         stagePopup.setMinWidth(600);
         stagePopup.setMinHeight(600);
-        stagePopup.setWidth(300);
+        stagePopup.setWidth(400);
         stagePopup.setWidth(600);
         stagePopup.setHeight(300);
         stagePopup.showAndWait();

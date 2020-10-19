@@ -25,6 +25,7 @@ public class ProductExitScene {
     TableColumn<Product,String> isExpiredColumn;
     TableColumn<Product,String> irsaliyeNoColumn;
     TableColumn<Product,LocalDate> cikisTarihiColumn;
+
     ObservableList<Product> queryResult;
 
     MySQLConnection mySQLConnection = new MySQLConnection();
@@ -38,7 +39,7 @@ public class ProductExitScene {
         queryItemQuantity.setPromptText("Depodan çekilecek ürünün miktarını giriniz.");
 
         Button buttonQuery = new Button("Sorgula");
-        Button returnButton = new Button("Return");
+        Button returnButton = new Button("Geri Dön");
 
         urunAdiColumn = new TableColumn<Product, String>("Ürün Adı");
         urunMiktariColumn = new TableColumn<Product, Integer>("Ürün Miktarı");
@@ -74,8 +75,8 @@ public class ProductExitScene {
     }
 
     private void buttonQueryClicked() {
-            final String queryItemName= queryItemInput.getText().toUpperCase();
-            final String queryItemAmount = queryItemQuantity.getText();
+        final String queryItemName= queryItemInput.getText().toUpperCase();
+        final String queryItemAmount = queryItemQuantity.getText();
 
         if (queryItemName.equals("") && queryItemAmount.equals("")){
             queryResult =
@@ -98,15 +99,19 @@ public class ProductExitScene {
         // TODO Make the query according to our day's standards you big yoshi.
 
         //tableView1.setItems(queryResult);
-            irsaliyeNoColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("irsaliyeNo"));
-            urunAdiColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("urunAdi"));
-            urunMiktariColumn.setCellValueFactory(new PropertyValueFactory<Product,Integer>("urunMiktari"));
-            SKTTarihiColumn.setCellValueFactory(new PropertyValueFactory<Product,LocalDate>("SKTTarihi"));
-            isExpiredColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("isExpired"));
-            cikisTarihiColumn.setCellValueFactory(new PropertyValueFactory<Product,LocalDate>("girisTarihi"));
-            SKTTarihiColumn.setMinWidth(125);
-            isExpiredColumn.setMinWidth(200);
-            tableView1.setMinWidth(800);
+        irsaliyeNoColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("irsaliyeNo"));
+        urunAdiColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("urunAdi"));
+        urunMiktariColumn.setCellValueFactory(new PropertyValueFactory<Product,Integer>("urunMiktari"));
+        SKTTarihiColumn.setCellValueFactory(new PropertyValueFactory<Product,LocalDate>("SKTTarihi"));
+        isExpiredColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("isExpired"));
+        cikisTarihiColumn.setCellValueFactory(new PropertyValueFactory<Product,LocalDate>("girisTarihi"));
+        irsaliyeNoColumn.setMinWidth(100);
+        urunAdiColumn.setMinWidth(100);
+        urunMiktariColumn.setMinWidth(100);
+        SKTTarihiColumn.setMinWidth(120);
+        isExpiredColumn.setMinWidth(200);
+        cikisTarihiColumn.setMinWidth(120);
+        tableView1.setMinWidth(1000);
     }
 
 }

@@ -19,7 +19,7 @@ public class AlertBox {
         vBox1.getChildren().addAll(label1,button1);
         stagePopup.initModality(Modality.APPLICATION_MODAL);
         vBox1.setAlignment(Pos.CENTER);
-        vBox1.setPadding(new Insets(25));
+        vBox1.setPadding(new Insets(50));
         button1.setOnAction(e->{
             stagePopup.close();
         });
@@ -28,7 +28,7 @@ public class AlertBox {
         stagePopup.setScene(new Scene(vBox1));
 
         stagePopup.setMinWidth(600);
-        stagePopup.setMinHeight(600);
+        stagePopup.setMinHeight(300);
         stagePopup.setWidth(300);
         stagePopup.setTitle("Depo Görsel");
         stagePopup.setWidth(600);

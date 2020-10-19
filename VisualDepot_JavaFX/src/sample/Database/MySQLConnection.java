@@ -1,29 +1,32 @@
 package sample.Database;
 
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import sample.Boxes.AlertBox;
 import sample.Scenes.ProductScenes.Product;
 
+import javax.sql.DataSource;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.Properties;
 import java.util.Scanner;
 
 /*
-1. import
-2. load & register the driver -> com.mysql.jdbc.Driver
-3. connection
-4. create a statement
-5. execute the query
-6. process the result
-7. close
+Creating an instance of the DataSource class
+Setting its properties
+Registering it with a naming service that uses the Java Naming and Directory Interface (JNDI) API
+
+DataSource
 
  */
 
 
 public class MySQLConnection {
-    final String DRIVER_URL = "com.mysql.jdbc.Driver";
+    final static String DRIVER_URL = "com.mysql.jdbc.Driver";
     String DB_URL = "jdbc:mysql://localhost:3306/demodb";
     String UN = "root";
     String PW = "Rootkfy2000#";
@@ -46,9 +49,13 @@ public class MySQLConnection {
      */
     public MySQLConnection(String DB_URL){
         this.DB_URL = "jdbc:mysql://localhost:3306/" + DB_URL;
+        this.UN = UN;
+        this.PW = PW;
     }
     public MySQLConnection(){
-
+        this.DB_URL = DB_URL;
+        this.UN = UN;
+        this.PW = PW;
     }//TODO put the necessary connection statements inside the class constructors.
 
     /**
@@ -241,9 +248,34 @@ public class MySQLConnection {
         }
         finally{
             st.close();
-            rs.close(); rs1.close();
+            rs.close();
+            rs1.close();
             con.close();
         }
         return answer;
+    }
+
+    public void setDB_URL(String DB_URL) {
+        this.DB_URL = DB_URL;
+    }
+
+    public String getDB_URL() {
+        return DB_URL;
+    }
+
+    public String getUN() {
+        return UN;
+    }
+
+    public void setUN(String UN) {
+        this.UN = UN;
+    }
+
+    public String getPW() {
+        return PW;
+    }
+
+    public void setPW(String PW) {
+        this.PW = PW;
     }
 }
